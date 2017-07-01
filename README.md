@@ -1,5 +1,5 @@
 # WagMore
-A website that allows dog owners to meet online. 
+A website that allows dog owners to meet online. Link of the hosted app https://lsg95.pythonanywhere.com/WagMore/default/index
 
 # SCRUM documents
 
