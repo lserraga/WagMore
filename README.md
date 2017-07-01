@@ -1,4 +1,6 @@
 # WagMore
+A website that allows dog owners to meet online. 
+
 # SCRUM documents
 
 RELEASE 1.0 ACCEPTANCE DOCUMENT: https://docs.google.com/document/d/1V6filERXSwtOamE9Jd0uAbIT3v-Y_VriBdMTLxVGIOA/edit?usp=sharing
