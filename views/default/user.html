@@ -1,0 +1,123 @@
+{{extend 'layout.html'}}
+
+<style>
+    body{
+        margin-top:-80px;
+        background-color: #edf7fb;
+    }
+    #header{
+        display: flex;
+        justify-content: center;
+        height:135px;
+        background: -webkit-linear-gradient(left, #e4f5fc 0%, #bfe8f9 50%, #9fd8ef 63%, #2ab0ed 100%); /* FF3.6-15 */
+        padding-top: 15px;
+    }
+    .navbar, .footer{
+        visibility: hidden;
+    }
+
+    #logo{
+        position: absolute;
+        left: 10px;
+        top: 0px;
+    }
+    .form-control {
+        width: 300px;
+        margin:0px;
+    }
+    .container{
+        margin-left: 25%;
+        width: 50%;
+    }
+    #paw{
+        position: absolute;
+        float:left;
+        margin-top: 50px;
+        opacity:0.5;
+    }
+    #paw2{
+        position: absolute;
+        align-items:right;
+        margin-left: 70%;
+        margin-top: 200px;
+        opacity:0.5;
+        transform: scaleX(-1);
+
+    }
+    #user{
+        position: absolute;
+        float:left;
+        margin-top: 200px;
+        margin-left: 100px;
+        opacity:0.5;
+        transform: rotate(13deg);
+    }
+    #dog{
+        position: absolute;
+        align-items:right;
+        margin-left: 70%;
+        margin-top: 50px;
+        opacity:0.5;
+        transform: rotate(-13deg);
+    }
+
+</style>
+
+<head>
+    <title>User</title>
+    <link rel="shortcut icon" href="{{=URL('static', 'images/title.png')}}" />
+</head>
+
+<div id="header">
+
+    <img id="logo" src="{{=URL('static', 'images/wagMoreLogo.png')}}" width="200" height="152" alt="Woof!">
+
+    <div id="title">
+        <h1>{{=T('Sign Up') if request.args(0) == 'register' else T('Log In') if request.args(0) == 'login' else T(request.args(0).replace('_',' ').title())}}
+        </h1>
+    </div>
+</div>
+<img id="paw" src="{{=URL('static', 'images/appLogo.png')}}" width="200" height="152" alt="Woof!">
+
+<img id="paw2" src="{{=URL('static', 'images/appLogo.png')}}" width="200" height="152" alt="Woof!">
+
+<img id="user" src="{{=URL('static', 'images/person.png')}}" width="150" height="150" alt="Woof!">
+
+<img id="dog" src="{{=URL('static', 'images/dog.png')}}" width="150" height="150" alt="Woof!">
+<div class="container">
+    <div class="row">
+        <div id="web2py_user_form" class="col-lg-6">
+        {{
+        if request.args(0)=='login':
+            if not 'register' in auth.settings.actions_disabled:
+                form.add_button(T('Sign Up'),URL(args='register', vars={'_next': request.vars._next} if request.vars._next else None),_class='btn btn-default')
+            pass
+            if not 'request_reset_password' in auth.settings.actions_disabled:
+                form.add_button(T('Lost Password'),URL(args='request_reset_password'),_class='btn btn-default')
+            pass
+
+        pass}}
+        </div>
+        <br>
+        {{=form}}
+    </div>
+</div>
+
+{{if request.args(1)=='Test':}}
+  <script type="text/javascript">
+    document.getElementById("auth_user_email").value="luikserra@gmail.com";
+    document.getElementById("auth_user_password").value="1234";
+  </script>
+{{pass}}
+
+
+{{block page_js}}
+<script>
+    jQuery("#web2py_user_form input:visible:enabled:first").focus();
+{{if request.args(0)=='register':}}
+    web2py_validate_entropy(jQuery('#auth_user_password'),100);
+{{elif request.args(0)=='change_password':}}
+    web2py_validate_entropy(jQuery('#no_table_new_password'),100);
+{{pass}}
+</script>
+{{end page_js}}

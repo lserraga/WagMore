@@ -1,0 +1,390 @@
+{{include 'web2py_ajax.html'}}
+
+
+<style>
+    body{
+        background-color: #edf7fb;
+    }
+    a{
+        text-decoration: none;
+        color:#464e5e;
+        cursor: pointer;
+    }
+    a:hover{
+        text-decoration: underline;
+    }
+    .navbar, .footer{
+        visibility: hidden;
+    }
+    .profile {
+        float:left;
+        margin:20px 35px;
+        width: 300px;
+    }
+    .profPerson{
+        position:relative;
+        float:left;
+        width: 105px;
+        height: 143px;
+        margin-left: -274px;
+        margin-top: 25px;
+        overflow: hidden;
+    }
+    .profPerson img{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .profDog{
+        position:relative;
+        float:left;
+        margin-left: 167px;
+        margin-top: -165px;
+        width: 105px;
+        height: 143px;
+        overflow: hidden;
+    }
+    .paws{
+        position:relative;
+        float:left;
+        margin-left: 187px;
+        margin-top: -236px;
+        width: 105px;
+        height: 43px;
+        transform: rotate(13deg);
+    }
+    .profDog img{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .name{
+        margin-bottom: 10px;
+        border: 1px solid grey;
+        background-color: white;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    #header{
+        display: flex;
+        justify-content: center;
+        height:140px;
+        background: -webkit-linear-gradient(left, #e4f5fc 0%, #bfe8f9 50%, #9fd8ef 63%, #2ab0ed 100%); /* FF3.6-15 */
+        padding-top: 15px;
+    }
+    #logo{
+        position: absolute;
+        left: 10px;
+        top: 20px;
+    }
+    #title{
+        float:left;
+        margin-top: 20px;
+        margin-left: 100px;
+        margin-right: 250px;
+        align-content: center;
+
+    }
+    #frame{
+        box-shadow: 10px 10px 5px grey;
+        background-color: #464e5e;
+    }
+    #logOut{
+        position:absolute;
+        right: 30px;
+        cursor: pointer;
+        transform: rotate(30deg);
+        margin-top: -15px;
+
+    }
+    button{
+        position:absolute;
+        padding: 5px 15px;
+        color: white;
+        background-color:  #0275d8;
+        font-size: 14px;
+        margin-top:25px;
+        cursor: pointer;
+
+    }
+
+    .paws .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 5px;
+        margin-left: -10px;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+    }
+    .paws:hover .tooltiptext {
+        visibility: visible;
+    }
+    .msn{
+        position:relative;
+        float:left;
+        margin-left: 210px;
+        margin-top: -300px;
+        transform: rotate(10deg);
+        cursor: pointer;
+    }
+    #myProfile{
+        position: absolute;
+        right: 180px;
+        margin-top: -15px;
+    }
+    #blockedMatches{
+        position: absolute;
+        margin-top: 120px;
+        right: 180px;
+    }
+    #moreMatches{
+        position:absolute;
+        right: 25px;
+        cursor: pointer;
+        margin-top: -30px;
+    }
+    .suggestions {
+        background: white; border: solid 1px #55A6C8;
+    }
+    .suggestions DIV {
+        padding: 2px 4px 2px 4px;
+    }
+
+    .display {
+        background: white; border: solid 1px #55A6C8;
+    }
+
+    .searchbar {
+        height: 30px;
+        width: 400px;
+    }
+
+
+
+</style>
+<head>
+    <title>Profiles</title>
+    <link rel="shortcut icon" href="{{=URL('static', 'images/title.png')}}" />
+    <link rel="stylesheet" href="{{=URL('static', 'font-awesome-4.6.3/css/font-awesome.min.css')}}"/>
+    <script src="{{=URL('static', 'js/vue.js')}}"></script>
+</head>
+
+
+<body>
+
+    <div id="header">
+            <img id="logo" src="{{=URL('static', 'images/wagMoreLogo.png')}}" width="200" height="152" alt="Woof!">
+            <div id="title">
+                <h1>
+                    List of people you matched with
+                </h1>
+            </div>
+
+
+            <img id="logOut" src="{{=URL('static', 'images/buttonLogout.png')}}" width="150" height="152" alt="Log out" onclick="location.href='{{=URL('default', 'user', args=['logout'])}}'">
+
+
+            <img id="myProfile" src="{{=URL('static', 'images/buttonMyprofile.png')}}" width="150" height="152" alt="My profile" onclick="location.href='{{=URL('default', 'show', args=[auth.user.id,-1])}}'" style="cursor: pointer">
+    <br>
+            {{if not showBlocked:}}
+                <img id="blockedMatches" src="{{=URL('static', 'images/buttonBlockedmatches.png')}}" width="180" height="180" alt="Blocked" onclick="location.href='{{=URL('default', 'profiles', args=['blocked', 5])}}'" style="cursor: pointer">
+            {{else:}}
+                <img id="blockedMatches" src="{{=URL('static', 'images/buttonShowmatches.png')}}" width="180" height="180" alt="Show matches" onclick="location.href='{{=URL('default', 'profiles')}}'" style="cursor: pointer">
+            {{pass}}
+
+            <div><br><br><br><br><br><br><br><br>
+                <img id="moreMatches" style=" cursor:pointer" src="{{=URL('static', 'images/buttonCheckmatches.png')}}" width="180" height="180" alt="Reload your matches!" onclick="location.href='{{=URL('default', 'profiles', args="ReloadMatches")}}'" >
+
+            </div>
+    <center><div class="flash" style="color:red;">{{=response.flash or ''}}</div></center>
+    </div>
+
+
+    <form method="get" action="/Wagmore_beta/default/search">
+        <input type="text" id="person" autocomplete="off" name="person" class="searchbar" placeholder="Search for..."/>
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <div style="position: absolute;" id="suggestions" class="suggestions"></div>
+    </form>
+
+
+    <button id="Buttonlike" style="font-size: 12px; background-color: #FFFFFF; top: 140px; right: 700px;border-color: black;">
+        <i id="likeButton" name="likeButton" class="fa fa-thumbs-o-up fa-2x" style="color:black" aria-hidden="true"> Likes</i>
+    </button>
+    <br><br><br>
+    <div id="likes" style="position: absolute; left: 625px; top: 205px;" class="display"></div>
+
+    <button id="Buttonmessage" style="font-size: 12px; background-color: #FFFFFF; top: 140px; right: 500px;border-color: black;">
+        <i id="messageButton" name="messageButton" class="fa fa-envelope fa-2x" style="color:black" aria-hidden="true"> Messages</i>
+    </button>
+    <br><br><br>
+    <div id="messages" style="position: absolute; left: 780px; top: 205px;" class="display"></div>
+
+
+
+
+
+
+    {{if numberOfMatches==0:}}
+        <h2 align="center">Sorry {{=auth.user.first_name}}, you have no matches! Nobody wants you!</h2>
+    {{else:}}
+        <h2 align="center">Congratulations, {{=auth.user.first_name}}! You have matches!<br>Showing {{=(numberOfMatches-numberOfBlocked)}} match(es).</h2>
+        {{if numberOfBlocked==1:}}
+            <h2 align="center">You have blocked 1 person</h2>
+        {{else:}}
+            <h2 align="center">You have blocked {{=numberOfBlocked}} people</h2>
+        {{pass}}
+    {{pass}}
+
+
+
+    {{i=0}}
+    {{for match in matches:}}
+
+        {{if match.blocked==showBlocked:}}
+
+            {{profile=db(db.profile.id==match.idToMatch).select()[0]}}
+            {{if theyBlockedYou[i] != 1:}}
+
+
+                <div class="profile">
+                <div class="name"><b>{{=A(profile.name, _href=URL("show", args=[profile.id, match.id]))}}</b> AND
+                <b>{{=A(profile.dogName, _href=URL("show", args=[profile.id, match.id]))}}</b></div>
+                <img id="frame" width="300px" height="250px" style="float:left" src="{{=URL('static', 'images/marco.png')}}"/>
+
+                    <div class="profPerson" >
+                        {{picture = db(db.images.id==profile.id).select().first()}}
+                        {{if (picture == None) or (len(picture.profilePic) == 0):}}
+                        <img width="100%", height="100%"  src="{{=URL('static', 'images/No_Image_Available.png')}}"/>
+
+                        {{else:}}
+
+                        <img width="105px"
+                             src="{{=URL('download', args=picture.profilePic)}}"
+                             onClick='window.location="{{=URL('show', args=[profile.id, match.id])}}";'/>
+                        {{pass}}
+
+                    </div>
+                    <div class="profDog">
+
+                        {{if (picture == None) or (len(picture.profilePicDog) == 0):}}
+                            <img width="105px", height="100%" src="{{=URL('static', 'images/No_Image_Available.png')}}"/>
+                        {{else:}}
+                            <img width="105px"
+                            src="{{=URL('download', args=picture.profilePicDog)}}"/>
+                        {{pass}}
+                    </div>
+                    {{if match.percentage>89:
+                        img = "images/4paws_2.png"
+                        comp = str(match.percentage) + "% compatibility"
+                      elif match.percentage>74:
+                        img = "images/3paws_2.png"
+                        comp = str(match.percentage) + "% compatibility"
+                      elif match.percentage>59:
+                        img = "images/2paws_2.png"
+                        comp = str(match.percentage) + "% compatibility"
+                      else:
+                        img = "images/1paws_2.png"
+                        comp = str(match.percentage) + "% compatibility"
+                      pass
+                    }}
+                    <div class="paws">
+                        <img width="105px" src="{{=URL('static', img)}}">
+                        <span class="tooltiptext">{{=comp}}</span>
+
+                    </div>
+                    {{if (myList[i]>0):}}
+                        <img class="msn" width="120px" src="{{=URL('static', 'images/msn.png')}}" onclick="location.href='{{=URL("show", args=[profile.id, match.id])}}'"/>
+                    {{pass}}
+                    {{if (match.distance < 2):}}
+                        <h4>You were less than 2 miles away when you matched!!</h4>
+                    {{else:}}
+                        <h4>You were {{=match.distance}} miles away when you matched</h4>
+
+                    {{pass}}
+                {{pass}}
+            </div>
+        {{i += 1}}
+        {{pass}}
+    {{pass}}
+
+
+
+
+
+
+
+
+
+
+</body>
+<script>
+
+    var likeClicked = false
+    var messagesClicked = false
+
+
+    $("#person").keyup(function () {
+        ajax('{{=URL('default', 'person_selector')}}', ['person'], 'suggestions')
+    });
+
+    $("#likeButton").click(function () {
+        likeClicked = !likeClicked
+        if (likeClicked == true) {
+            $.ajax({
+                url: '{{=URL('default', 'getLikes')}}', success: function (result) {
+                    //("#likes").html()
+                    $("#Buttonlike").css("background-color","white");
+                    $("#Buttonlike").css("background-color", "black");
+                    $("#likeButton").css("color", "white");
+                    $("#likes").append("<div> <b>Notifications: </b></div>");
+                    $("#likes").append(result);
+                }
+            });
+        } else {
+            $.ajax({
+                url: '{{=URL('default', 'unseeLikes', )}}',
+                success: function (result) {
+                    $("#Buttonlike").css("background-color","black");
+                    $("#Buttonlike").css("background-color", "white");
+                    $("#likeButton").css("color", "black");
+                    $("#likes").html(result);
+                }
+            });
+        }
+    });
+
+    $("#messageButton").click(function () {
+        messagesClicked = !messagesClicked
+        if (messagesClicked == true) {
+            $.ajax({
+                url: '{{=URL('default', 'getMessages')}}', success: function (result) {
+                    //("#likes").html()
+                    $("#Buttonmessage").css("background-color","white");
+                    $("#Buttonmessage").css("background-color", "black");
+                    $("#messageButton").css("color", "white");
+                    $("#messages").append("<div> <b>New messages from: </b></div>");
+                    $("#messages").append(result);
+                }
+            });
+        } else {
+            $.ajax({
+                url: '{{=URL('default', 'unseeMessages', )}}',
+                success: function (result) {
+                    $("#Buttonmessage").css("background-color","black");
+                    $("#Buttonmessage").css("background-color", "white");
+                    $("#messageButton").css("color", "black");
+                    $("#messages").html(result);
+                }
+            });
+        }
+    });
+
+
+
+</script>
